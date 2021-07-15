@@ -4,6 +4,13 @@ from minigrid_extensions import *
 
 from random import randint
 
+# rough hack
+import sys
+sys.path.insert(0, '../')
+
+from resolver import progress, is_accomplished
+
+
 class AdversarialEnv(MiniGridEnv):
     """
     An environment where a myopic agent will fail. The two possible goals are "Reach blue then green" or "Reach blue then red".
@@ -11,23 +18,34 @@ class AdversarialEnv(MiniGridEnv):
 
     def __init__(
         self,
-        size=8,
-        agent_start_pos=(1,1),
-        agent_start_dir=0,
-        timeout=100
+        size=8,                 # size of the grid world
+        agent_start_pos=(1,1),  # starting agent position
+        agent_start_dir=0,      # starting agent orientation
+        fixed_instruction=None, # set an LTL instruction to kept every env reset
+        timeout=100             # max steps that the agent can do
     ):
         self.agent_start_pos = agent_start_pos
         self.agent_start_dir = agent_start_dir
+        self.fixed_instruction = fixed_instruction
         self.event_objs = []
+        self.timeout = timeout
+        self.time = 0
+
+        # TODO: add helper function to randomly draw a new one at every env reset
+        self.task = ['A', ['G', ['N', 'b']], ['E', 'r']]
+
+        if fixed_instruction is not None:
+            self.task = fixed_instruction
 
         super().__init__(
             grid_size=size,
             max_steps=4*size*size,
-            # Set this to True for maximum speed
-            see_through_walls=True
+            see_through_walls=True # set this to True for maximum speed
         )
 
     def _gen_grid(self, width, height):
+        ''' Helper function to generate a new random world. Called at every env reset. '''
+
         # Create an empty grid
         self.grid = Grid(width, height)
 
@@ -45,7 +63,6 @@ class AdversarialEnv(MiniGridEnv):
         self.door_2_loc = (4,6)
         self.grid.set(*self.door_1_loc, self.door_1)
         self.grid.set(*self.door_2_loc, self.door_2)
-
 
         # Place a goal square in the bottom-right corner
         self.blue_goal_1_pos = (5, 7)
@@ -73,7 +90,6 @@ class AdversarialEnv(MiniGridEnv):
         self.event_objs.append((self.green_goal_pos, 'g'))
         self.event_objs.append((self.red_goal_pos, 'r'))
 
-
         # Place the agent
         if self.agent_start_pos is not None:
             self.agent_pos = self.agent_start_pos
@@ -81,11 +97,24 @@ class AdversarialEnv(MiniGridEnv):
         else:
             self.place_agent(top=(1,1), size=(3,7))
 
-        self.mission = "ignored"
+        # set the window title as well as the task to be accomplished
+        self.mission = str(self.task)
+
+
+    def reward(self):
+        '''
+            Helper function to establish the reward and the done signals.
+            Returns the (reward, done) tuple.
+        '''
+
+        if self.task == "True" or is_accomplished(self.task):   return (1, True)
+        elif self.task == "False":  return (-1, True)
+        return (0, False)
+
 
     def step(self, action):
-        # Lock the door automatically behind you
 
+        # Lock the door automatically behind you
         if action == self.actions.forward and self.agent_dir == 0:
             if tuple(self.agent_pos) == self.door_1_loc:
                 self.door_1.is_open = False
@@ -94,22 +123,38 @@ class AdversarialEnv(MiniGridEnv):
                 self.door_2.is_open = False
                 self.door_2.is_locked = True
 
-        obs, reward, done, _ = super().step(action)
+        obs, _, _, _ = super().step(action)
 
-        # if done and tuple(self.agent_pos) != self.target_pos:
-        #       reward = 0
+        # prog function call
+        self.task = progress(self.task, self.get_events())
+        self.mission = str(self.task) # update the window title
 
-        return obs, reward, False, {}
+        reward, done  = self.reward()
+
+        # max steps elapsed
+        self.time += 1
+        if self.time > self.timeout:
+            reward, done = -1, True
+            self.time = 0
+
+        # TODO: add the current LTL instructions to the agent observations
+        return obs, reward, done, {}
+
 
     def get_events(self):
-        events = ""
+        ''' Event detector method. '''
+
+        events = []
         for obj in self.event_objs:
             if tuple(self.agent_pos) == obj[0]:
-                events += obj[1]
+                events.append(obj[1])
         return events
 
 
 class AdversarialEnv9x9(AdversarialEnv):
-    def __init__(self):
-        super().__init__(size=9, agent_start_pos=None)
+    def __init__(self, agent_start_pos=None, fixed_instruction=None):
+        super().__init__(size=9,
+                         agent_start_pos=agent_start_pos,
+                         fixed_instruction=fixed_instruction
+                        )
 

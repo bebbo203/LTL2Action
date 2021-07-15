@@ -1,14 +1,14 @@
-from adversarial import AdversarialEnv
-from minigrid_env import MinigridEnv
+from adversarial import AdversarialEnv9x9
 from matplotlib import pyplot as plt
 
-e = AdversarialEnv(size=9)
-e = MinigridEnv(e, "abc")
 
+e = AdversarialEnv9x9()
 e.reset()
 
-for i in range(1000000):
-    o, _, _, _ = e.step(e.action_space.sample())
-    print(e.get_events())
-    e.env.render()
-
+for i in range(1000):
+    action = e.action_space.sample()
+    o, r, d, _ = e.step(action)
+    # print(e.get_events())
+    e.render()
+    if d:
+        e.reset()

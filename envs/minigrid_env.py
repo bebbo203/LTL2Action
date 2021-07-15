@@ -14,7 +14,7 @@ class MinigridEnv(gym.Env):
     A simple wrapper for a gym-minigrid environment. This implements propositions on top of the minigrid. 
     """
 
-    def __init__(self, env, letters, timeout = 100):
+    def __init__(self, env, letters="abc", timeout=100):
         """
             ## env is the wrapped MiniGrid environment
         """
