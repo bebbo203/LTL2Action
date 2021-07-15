@@ -7,7 +7,6 @@ from random import randint
 # rough hack
 import sys
 sys.path.insert(0, '../')
-
 from resolver import progress, is_accomplished
 
 
@@ -21,27 +20,41 @@ class AdversarialEnv(MiniGridEnv):
         size=8,                 # size of the grid world
         agent_start_pos=(1,1),  # starting agent position
         agent_start_dir=0,      # starting agent orientation
-        fixed_instruction=None, # set an LTL instruction to kept every env reset
+        fixed_task=None,        # set an LTL instruction to kept every env reset
         timeout=100             # max steps that the agent can do
     ):
         self.agent_start_pos = agent_start_pos
         self.agent_start_dir = agent_start_dir
-        self.fixed_instruction = fixed_instruction
         self.event_objs = []
+
         self.timeout = timeout
         self.time = 0
-
-        # TODO: add helper function to randomly draw a new one at every env reset
-        self.task = ['A', ['G', ['N', 'b']], ['E', 'r']]
-
-        if fixed_instruction is not None:
-            self.task = fixed_instruction
+        self.fixed_task = fixed_task
+        self.task = None
 
         super().__init__(
             grid_size=size,
             max_steps=4*size*size,
             see_through_walls=True # set this to True for maximum speed
         )
+
+    def draw_task(self):
+        ''' Helper function to randomly draw a new LTL task from the task distribution. '''
+
+        if self.fixed_task is not None:
+            return self.fixed_task
+
+        tasks = [
+            ['A', ['G', ['N', 'b']], ['E', 'r']],
+            ['A', ['E', 'b'], ['E', 'g']],
+            ['O', ['E', 'b'], ['E', 'g']],
+            ['A', ['E', 'b'], ['E', 'r']],
+            ['O', ['E', 'b'], ['E', 'r']],
+            ['E', ['A', 'r', ['E', 'b']]],
+        ]
+        return tasks[randint(0, len(tasks) - 1)]
+
+
 
     def _gen_grid(self, width, height):
         ''' Helper function to generate a new random world. Called at every env reset. '''
@@ -97,8 +110,9 @@ class AdversarialEnv(MiniGridEnv):
         else:
             self.place_agent(top=(1,1), size=(3,7))
 
-        # set the window title as well as the task to be accomplished
-        self.mission = str(self.task)
+        # Task
+        self.task = self.draw_task()
+        self.mission = str(self.task) # show instructions left while rendering
 
 
     def reward(self):
@@ -129,7 +143,7 @@ class AdversarialEnv(MiniGridEnv):
         self.task = progress(self.task, self.get_events())
         self.mission = str(self.task) # update the window title
 
-        reward, done  = self.reward()
+        reward, done = self.reward()
 
         # max steps elapsed
         self.time += 1
@@ -152,9 +166,9 @@ class AdversarialEnv(MiniGridEnv):
 
 
 class AdversarialEnv9x9(AdversarialEnv):
-    def __init__(self, agent_start_pos=None, fixed_instruction=None):
+    def __init__(self, agent_start_pos=None, fixed_task=None):
         super().__init__(size=9,
                          agent_start_pos=agent_start_pos,
-                         fixed_instruction=fixed_instruction
+                         fixed_task=fixed_task  
                         )
 
