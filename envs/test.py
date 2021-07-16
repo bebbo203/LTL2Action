@@ -9,13 +9,14 @@ def vocabulary(letter):
     elif letter == 'w': return 2 # forward
     else: raise NotImplementedError
 
-e = AdversarialEnv9x9()
-e.reset()
+e = AdversarialEnv9x9(fixed_task=['A', ['E', 'r'], ['E', 'b']])
+
 
 for i in range(1000):
-    # action = e.action_space.sample()
-    action = vocabulary(input())
+    action = e.action_space.sample()
+    #action = vocabulary(input())
     o, r, d, _ = e.step(action)
+    print(o)
     # print(e.get_events())
     e.render()
     if d:

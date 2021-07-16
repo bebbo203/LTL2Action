@@ -1,13 +1,15 @@
+from hashlib import new
 from gym_minigrid.minigrid import *
 from gym_minigrid.register import register
-from minigrid_extensions import *
-
-from random import randint
 
 # rough hack
 import sys
+sys.path.insert(0, './envs')
+from minigrid_extensions import *
 sys.path.insert(0, '../')
 from resolver import progress, is_accomplished
+
+from random import randint
 
 
 class AdversarialEnv(MiniGridEnv):
@@ -32,11 +34,73 @@ class AdversarialEnv(MiniGridEnv):
         self.fixed_task = fixed_task
         self.task = None
 
-        super().__init__(
+        self.super_init(
             grid_size=size,
             max_steps=4*size*size,
             see_through_walls=True # set this to True for maximum speed
         )
+
+    def super_init(
+        self,
+        grid_size=None,
+        width=None,
+        height=None,
+        max_steps=100,
+        see_through_walls=False,
+        seed=1337,
+        agent_view_size=7
+    ):
+        # Can't set both grid_size and width/height
+        if grid_size:
+            assert width == None and height == None
+            width = grid_size
+            height = grid_size
+
+        # Action enumeration for this environment
+        self.actions = MiniGridEnv.Actions
+
+        # Actions are discrete integer values
+        self.action_space = spaces.Discrete(len(self.actions))
+
+        # Number of cells (width and height) in the agent view
+        assert agent_view_size % 2 == 1
+        assert agent_view_size >= 3
+        self.agent_view_size = agent_view_size
+
+        # Observations are dictionaries containing an
+        # encoding of the grid and a textual 'mission' string
+        self.observation_space = spaces.Box(
+            low=0,
+            high=255,
+            shape=(180,), # Mission needs to be padded
+            dtype='uint8'
+        )
+        # self.observation_space = spaces.Dict({
+        #     'image': self.observation_space
+        # })
+
+        # Range of possible rewards
+        self.reward_range = (0, 1)
+
+        # Window to use for human rendering mode
+        self.window = None
+
+        # Environment configuration
+        self.width = width
+        self.height = height
+        self.max_steps = max_steps
+        self.see_through_walls = see_through_walls
+
+        # Current position and direction of the agent
+        self.agent_pos = None
+        self.agent_dir = None
+
+        # Initialize the RNG
+        self.seed(seed=seed)
+
+        # Initialize the state
+        self.reset()
+
 
     def draw_task(self):
         ''' Helper function to randomly draw a new LTL task from the task distribution. '''
@@ -46,11 +110,16 @@ class AdversarialEnv(MiniGridEnv):
 
         tasks = [
             ['A', ['G', ['N', 'b']], ['E', 'r']],
+            ['A', ['G', ['N', 'b']], ['E', 'g']],
+            ['A', ['G', ['N', 'r']], ['E', 'b']],
             ['A', ['E', 'b'], ['E', 'g']],
             ['O', ['E', 'b'], ['E', 'g']],
             ['A', ['E', 'b'], ['E', 'r']],
             ['O', ['E', 'b'], ['E', 'r']],
             ['E', ['A', 'r', ['E', 'b']]],
+            ['E', 'r'],
+            ['E', 'b'],
+            ['E', 'g'],
         ]
         return tasks[randint(0, len(tasks) - 1)]
 
@@ -100,7 +169,7 @@ class AdversarialEnv(MiniGridEnv):
         self.event_objs = []
         self.event_objs.append((self.blue_goal_1_pos, 'b'))
         self.event_objs.append((self.blue_goal_2_pos, 'b'))
-        self.event_objs.append((self.green_goal_pos, 'g'))
+        self.event_objs.append((self.green_goal, 'g'))
         self.event_objs.append((self.red_goal_pos, 'r'))
 
         # Place the agent
@@ -124,6 +193,36 @@ class AdversarialEnv(MiniGridEnv):
         if self.task == "True" or is_accomplished(self.task):   return (1, True)
         elif self.task == "False":  return (-1, True)
         return (0, False)
+
+
+    def encode_mission(self, mission):
+        syms = "AONGUXE[]rgb"
+        V = {k: v+1 for v, k in enumerate(syms)}
+        return [V[e] for e in mission if e not in ["\'", ",", " "]]        
+
+    
+    def gen_obs(self):
+        """
+        Generate the agent's view (partially observable, low-resolution encoding)
+        """
+        obs = super().gen_obs()
+        
+        # obs = {
+        #     'image': image, (7,7,3)
+        #     'direction': self.agent_dir,
+        #     'mission': self.mission
+        # }
+        
+        img = np.array(obs["image"]).reshape(-1) #147
+        direction = np.array([obs["direction"]]) # 1
+        mission = np.array(self.encode_mission(obs["mission"]))
+
+        new_obs = np.concatenate((img, direction, mission))
+
+        obs = np.zeros(180)
+        obs[:new_obs.shape[0]] = new_obs
+        
+        return obs
 
 
     def step(self, action):
