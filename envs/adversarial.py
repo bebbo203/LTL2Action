@@ -22,7 +22,7 @@ class AdversarialEnv(MiniGridEnv):
         size=8,                 # size of the grid world
         agent_start_pos=(1,1),  # starting agent position
         agent_start_dir=0,      # starting agent orientation
-        fixed_task=None,        # set an LTL instruction to kept every env reset
+        fixed_task=None,        # set an LTL instruction to be kept at every env reset
         timeout=100             # max steps that the agent can do
     ):
         self.agent_start_pos = agent_start_pos
@@ -80,7 +80,7 @@ class AdversarialEnv(MiniGridEnv):
         # })
 
         # Range of possible rewards
-        self.reward_range = (0, 1)
+        self.reward_range = (-1, 1)
 
         # Window to use for human rendering mode
         self.window = None
@@ -101,6 +101,12 @@ class AdversarialEnv(MiniGridEnv):
         # Initialize the state
         self.reset()
 
+    
+    def reset(self):
+        obs = super().reset()
+        self.time = 0
+        return obs
+
 
     def draw_task(self):
         ''' Helper function to randomly draw a new LTL task from the task distribution. '''
@@ -112,11 +118,19 @@ class AdversarialEnv(MiniGridEnv):
             ['A', ['G', ['N', 'b']], ['E', 'r']],
             ['A', ['G', ['N', 'b']], ['E', 'g']],
             ['A', ['G', ['N', 'r']], ['E', 'b']],
+            ['A', ['G', ['N', 'g']], ['E', 'b']],
             ['A', ['E', 'b'], ['E', 'g']],
             ['O', ['E', 'b'], ['E', 'g']],
             ['A', ['E', 'b'], ['E', 'r']],
             ['O', ['E', 'b'], ['E', 'r']],
             ['E', ['A', 'r', ['E', 'b']]],
+            ['E', ['A', 'b', ['E', 'r']]],
+            ['E', ['A', 'g', ['E', 'b']]],
+            ['E', ['A', 'b', ['E', 'g']]],
+            ['E', ['A', 'r', ['E', ['A', 'b', ['E', 'r']]]]],
+            ['E', ['A', 'g', ['E', ['A', 'b', ['E', 'g']]]]],
+            ['E', ['A', 'b', ['E', ['A', 'r', ['E', 'b']]]]],
+            ['E', ['A', 'b', ['E', ['A', 'g', ['E', 'b']]]]],
             ['E', 'r'],
             ['E', 'b'],
             ['E', 'g'],
@@ -169,7 +183,7 @@ class AdversarialEnv(MiniGridEnv):
         self.event_objs = []
         self.event_objs.append((self.blue_goal_1_pos, 'b'))
         self.event_objs.append((self.blue_goal_2_pos, 'b'))
-        self.event_objs.append((self.green_goal, 'g'))
+        self.event_objs.append((self.green_goal_pos, 'g'))
         self.event_objs.append((self.red_goal_pos, 'r'))
 
         # Place the agent
@@ -181,7 +195,7 @@ class AdversarialEnv(MiniGridEnv):
 
         # Task
         self.task = self.draw_task()
-        self.mission = str(self.task) # show instructions left while rendering
+        self.mission = str(self.task)
 
 
     def reward(self):
@@ -248,14 +262,12 @@ class AdversarialEnv(MiniGridEnv):
         self.time += 1
         if self.time > self.timeout:
             reward, done = -1, True
-            self.time = 0
 
-        # TODO: add the current LTL instructions to the agent observations
         return obs, reward, done, {}
 
 
     def get_events(self):
-        ''' Event detector method. '''
+        ''' Event detector. '''
 
         events = []
         for obj in self.event_objs:
