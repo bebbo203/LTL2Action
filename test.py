@@ -18,7 +18,7 @@ def control(letter):
 
 
 env = AdversarialEnv9x9()
-model = PPO.load('./logs/best_model.zip') if not MANUAL_CONTROL else None
+model = PPO.load('./logs/best_model.zip', strict=False) if not MANUAL_CONTROL else None
 
 obs = env.reset()
 for i in range(1000):

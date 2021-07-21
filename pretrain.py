@@ -104,7 +104,7 @@ model = PPO(CustomActorCriticPolicy, env, verbose=1, device="cuda")
 # Callback function to save the best model
 eval_callback = CustomCallback(Monitor(env), min_ep_rew_mean=.9, n_eval_episodes=20,
                                best_model_save_path='./pre_logs/', log_path='./pre_logs/',
-                               eval_freq=100, verbose=1, render=False)
+                               eval_freq=2*4096, verbose=1, render=False)
 
 # Training
 model.learn(int(1e6), callback=eval_callback)

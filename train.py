@@ -12,7 +12,7 @@ from customcallback import CustomCallback
 
 
 env = AdversarialEnv9x9()
-model = PPO(CustomActorCriticPolicy, env, verbose=1, device="cuda")
+model = PPO(CustomActorCriticPolicy, env, verbose=1, tensorboard_log="./tensorboard", device="cuda")
 
 # Load pre-trained weights for the LTL module
 # model.policy.mlp_extractor.rnn.load_state_dict(th.load("./weights_rnn.pt"))
@@ -24,7 +24,8 @@ eval_callback = CustomCallback(Monitor(env), min_ep_rew_mean=.5, n_eval_episodes
                                eval_freq=4*2048, verbose=1, render=False)
 
 # Training
-model.learn(int(5e6), callback=eval_callback)
+# model.learn(int(5e6), callback=eval_callback)
+model.learn(2048*5, callback=eval_callback)
 
 # Evaluation
 mean_rew, std_rew = evaluate_policy(model.policy, Monitor(env),

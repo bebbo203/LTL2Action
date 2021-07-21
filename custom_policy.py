@@ -45,8 +45,8 @@ class CustomNetwork(nn.Module):
             nn.Flatten()
         )
 
-        # # direction embedding
-        # self.dir_embedding = nn.Embedding(4, 16)
+        # direction embedding
+        self.dir_embedding = nn.Embedding(4, 16)
 
         # LTL module
         self.ltl_embedder = nn.Embedding(13, 8, padding_idx=0)
