@@ -7,12 +7,12 @@ import sys
 sys.path.insert(0, './envs')
 from minigrid_extensions import *
 sys.path.insert(0, '../')
-from resolver import progress, is_accomplished
+from resolver import progress
 
 from random import randint
 
 
-class AdversarialEnv(MiniGridEnv):
+class AdversarialMyopicEnv(MiniGridEnv):
     """
     An environment where a myopic agent will fail. The two possible goals are "Reach blue then green" or "Reach blue then red".
     """
@@ -22,7 +22,6 @@ class AdversarialEnv(MiniGridEnv):
         size=8,                 # size of the grid world
         agent_start_pos=(1,1),  # starting agent position
         agent_start_dir=0,      # starting agent orientation
-        fixed_task=None,        # set an LTL instruction to be kept at every env reset
         timeout=100             # max steps that the agent can do
     ):
         self.agent_start_pos = agent_start_pos
@@ -31,8 +30,7 @@ class AdversarialEnv(MiniGridEnv):
 
         self.timeout = timeout
         self.time = 0
-        self.fixed_task = fixed_task
-        self.task = None
+        self.complete_task = None
 
         self.super_init(
             grid_size=size,
@@ -111,29 +109,9 @@ class AdversarialEnv(MiniGridEnv):
     def draw_task(self):
         ''' Helper function to randomly draw a new LTL task from the task distribution. '''
 
-        if self.fixed_task is not None:
-            return self.fixed_task
-
         tasks = [
-            ['A', ['G', ['N', 'b']], ['E', 'r']],
-            ['A', ['G', ['N', 'b']], ['E', 'g']],
-            ['A', ['G', ['N', 'r']], ['E', 'b']],
-            ['A', ['G', ['N', 'g']], ['E', 'b']],
-            ['A', ['E', 'b'], ['E', 'g']],
-            ['O', ['E', 'b'], ['E', 'g']],
-            ['A', ['E', 'b'], ['E', 'r']],
-            ['O', ['E', 'b'], ['E', 'r']],
-            ['E', ['A', 'r', ['E', 'b']]],
-            ['E', ['A', 'b', ['E', 'r']]],
-            ['E', ['A', 'g', ['E', 'b']]],
-            ['E', ['A', 'b', ['E', 'g']]],
-            ['E', ['A', 'r', ['E', ['A', 'b', ['E', 'r']]]]],
-            ['E', ['A', 'g', ['E', ['A', 'b', ['E', 'g']]]]],
-            ['E', ['A', 'b', ['E', ['A', 'r', ['E', 'b']]]]],
-            ['E', ['A', 'b', ['E', ['A', 'g', ['E', 'b']]]]],
-            ['E', 'r'],
-            ['E', 'b'],
-            ['E', 'g'],
+            [['E', 'b'], ['E', 'r']],   # blue first, then red
+            [['E', 'b'], ['E', 'g']]    # blue first, then green
         ]
         return tasks[randint(0, len(tasks) - 1)]
 
@@ -194,8 +172,8 @@ class AdversarialEnv(MiniGridEnv):
             self.place_agent(top=(1,1), size=(3,7))
 
         # Task
-        self.task = self.draw_task()
-        self.mission = str(self.task)
+        self.complete_task = self.draw_task()
+        self.mission = str(self.complete_task[0])
 
 
     def reward(self):
@@ -204,9 +182,9 @@ class AdversarialEnv(MiniGridEnv):
             Returns the (reward, done) tuple.
         '''
 
-        if self.task == "True" or is_accomplished(self.task):   return (1, True)
-        elif self.task == "False":  return (-1, True)
-        return (0, False)
+        if self.mission == "True":      return (1, True)
+        elif self.mission == "False":   return (-1, True)
+        else:                           return (0, False)
 
 
     def encode_mission(self, mission):
@@ -253,8 +231,9 @@ class AdversarialEnv(MiniGridEnv):
         obs, _, _, _ = super().step(action)
 
         # prog function call
-        self.task = progress(self.task, self.get_events())
-        self.mission = str(self.task)
+        if progress(self.complete_task[0], self.get_events()) == "True":
+            self.complete_task.pop(0)
+        self.mission = str(self.complete_task[0]) if self.complete_task else "True"
 
         reward, done = self.reward()
 
@@ -276,10 +255,7 @@ class AdversarialEnv(MiniGridEnv):
         return events
 
 
-class AdversarialEnv9x9(AdversarialEnv):
-    def __init__(self, agent_start_pos=None, fixed_task=None):
-        super().__init__(size=9,
-                         agent_start_pos=agent_start_pos,
-                         fixed_task=fixed_task  
-                        )
+class AdversarialMyopicEnv9x9(AdversarialMyopicEnv):
+    def __init__(self, agent_start_pos=None):
+        super().__init__(size=9, agent_start_pos=agent_start_pos)
 

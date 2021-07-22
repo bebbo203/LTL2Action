@@ -15,6 +15,9 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.evaluation import evaluate_policy
 from customcallback import CustomCallback
 
+DEVICE = "cuda" if th.cuda.is_available() else "cpu"
+
+
 
 class CustomNetwork(nn.Module):
     """
@@ -99,24 +102,19 @@ class CustomActorCriticPolicy(ActorCriticPolicy):
 
 
 env = LTLBootcamp()
-model = PPO(CustomActorCriticPolicy, env, verbose=1, device="cuda")
-
-# Callback function to save the best model
-eval_callback = CustomCallback(Monitor(env), min_ep_rew_mean=.9, n_eval_episodes=20,
-                               best_model_save_path='./pre_logs/', log_path='./pre_logs/',
-                               eval_freq=2*4096, verbose=1, render=False)
+model = PPO(CustomActorCriticPolicy, env, verbose=1, device=DEVICE)
 
 # Training
-model.learn(int(1e6), callback=eval_callback)
+model.learn(int(1e6))
 
 # Evaluation
 mean_rew, std_rew = evaluate_policy(model.policy, Monitor(env),
-                                    n_eval_episodes=20,
+                                    n_eval_episodes=25,
                                     render=False,
-                                    deterministic=True)
+                                    deterministic=False)
 print(f"Mean reward: {mean_rew:.2f} +/- {std_rew:.2f}")
 
 # Save LTL module pre-trained weights
-th.save(model.policy.mlp_extractor.rnn.state_dict(), "weights_rnn.pt")
-th.save(model.policy.mlp_extractor.ltl_embedder.state_dict(), "weights_ltl.pt")
+th.save(model.policy.mlp_extractor.rnn.state_dict(), "./pre_logs/weights_rnn.pt")
+th.save(model.policy.mlp_extractor.ltl_embedder.state_dict(), "./pre_logs/weights_ltl.pt")
 
