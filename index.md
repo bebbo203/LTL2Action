@@ -2,7 +2,7 @@
 
 
 # LTL2Action: LTL Instructions for multi-task Reinforcement Learning 
-The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action](https://arxiv.org/pdf/2102.06858.pdf)
+The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action](https://arxiv.org/pdf/2102.06858.pdf) (Vaezipoor et al. 2021)
 
 
 ## Environment
