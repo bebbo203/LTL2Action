@@ -16,11 +16,11 @@ The environment is implemented with [gym-minigrid](https://github.com/maximecb/g
 
 ## Method
 
-![modules](https://user-images.githubusercontent.com/5352494/126873306-a021856d-dcba-4398-aa12-b98494e99dfb.png)
 
 We implemented a RL framework with LTL instructions which learn to solve complex tasks (formalized in LTL language) in challenging environments. At every iteration the RL agent can partially observe the environment sorrounding it and through an event detector a set of truth assignments which are going to somehow simplify (through the progression function) the LTL instruction, i.e. the remaining tasks to be accomplished.
 Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (such as PPO).
 
+![modules](https://user-images.githubusercontent.com/5352494/126873306-a021856d-dcba-4398-aa12-b98494e99dfb.png)
 
 ## Results
 
