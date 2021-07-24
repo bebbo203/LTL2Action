@@ -1,3 +1,6 @@
+
+
+
 # LTL2Action: LTL Instructions for multi-task Reinforcement Learning 
 The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action](https://arxiv.org/pdf/2102.06858.pdf)
 
@@ -13,7 +16,7 @@ The environment is implemented with [gym-minigrid](https://github.com/maximecb/g
 
 ## Method
 
-![Framework](imgs/modules.png)
+![modules](https://user-images.githubusercontent.com/5352494/126873306-a021856d-dcba-4398-aa12-b98494e99dfb.png)
 
 We implemented a RL framework with LTL instructions which learn to solve complex tasks (formalized in LTL language) in challenging environments. At every iteration the RL agent can partially observe the environment sorrounding it and through an event detector a set of truth assignments which are going to somehow simplify (through the progression function) the LTL instruction, i.e. the remaining tasks to be accomplished.
 Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (such as PPO).
@@ -40,6 +43,8 @@ Here some example videos:
 
 
 ![video1](https://user-images.githubusercontent.com/5352494/126873213-fae51c10-ecf2-4f9f-b4f8-5488d383bb35.gif)
+![video](https://user-images.githubusercontent.com/5352494/126873263-af3fb18c-b000-4f8c-bfb9-a863a1b96d9c.gif)
+![video3](https://user-images.githubusercontent.com/5352494/126873276-48dca188-4817-4509-b9ab-6f821a94074f.gif)
 
 
 
