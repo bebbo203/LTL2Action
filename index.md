@@ -39,20 +39,8 @@ Here some example videos:
 
 
 
-https://user-images.githubusercontent.com/5352494/126873040-f4ccbc75-e2fd-459f-b5f1-e8a295a0bce9.mp4
+![video1](https://user-images.githubusercontent.com/5352494/126873213-fae51c10-ecf2-4f9f-b4f8-5488d383bb35.gif)
 
-
-
-
-
-https://user-images.githubusercontent.com/5352494/126873061-442d43ab-3b73-4037-93e4-cba3c3334ecb.mp4
-
-
-
-
-
-
-https://user-images.githubusercontent.com/5352494/126873072-c7e5d759-fe7c-45e8-a6a4-4477d1e97ebd.mp4
 
 
 
