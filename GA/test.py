@@ -13,7 +13,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 MANUAL_CONTROL = False
 MYOPIC = False
-MODEL = "best_model" # {'main' | 'toy_grid' | 'myopic'} #
+MODEL = "ga"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 

@@ -10,6 +10,7 @@ from gym_minigrid.register import register
 import sys
 # sys.path.insert(0, '../')
 from resolver import progress, is_accomplished
+from GA import build_relations
 
 from random import randint
 
@@ -36,7 +37,7 @@ class LTLBootcamp(gym.Env):
         self.observation_space = spaces.Box(
             low=0,
             high=255,
-            shape=(32,), # Mission needs to be padded
+            shape=(110,), # Mission needs to be padded
             dtype='uint8'
         )
 
@@ -74,8 +75,9 @@ class LTLBootcamp(gym.Env):
         return tasks[randint(0, len(tasks) - 1)]
 
 
+
     def reset(self):
-        ''' Env reset, must be called as soon as 'done' becomes True. '''
+        ''' Env reset, must be called every time 'done' becomes True. '''
 
         self.task = self.draw_task()
         self.mission = str(self.task)
@@ -97,16 +99,20 @@ class LTLBootcamp(gym.Env):
     def gen_obs(self):
 
         def encode_mission(mission):
-            syms = "AONGUXE[]rgb"
-            V = {k: v+1 for v, k in enumerate(syms)}
-            return [V[e] for e in mission if e not in ["\'", ",", " "]]   
+            assert mission == str(self.task), "Task and mission are not equivalent!"
 
-        obs = np.zeros(32) # max mission length
+            syms = "AONGUXErgb"
+            V = {k: v+1 for v, k in enumerate(syms)}
+            enc = np.array([V[e] for e in mission if e not in "\', []"])
+            # TODO: parameterize
+            rels = build_relations(self.task, 10)
+            return np.concatenate([enc, np.zeros(10 - len(enc))]), np.array(rels)
+
+        obs = np.zeros(110) # max mission length
         if self.mission == 'True' or self.mission == 'False':
             return obs
-        mission = np.array(encode_mission(self.mission))
-        obs[:mission.shape[0]] = mission
-        return obs
+        mission, rels = encode_mission(self.mission)
+        return np.concatenate((mission, rels.reshape(-1))) # 10 + 10x10 = 110
 
 
     def step(self, action):

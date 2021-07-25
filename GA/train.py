@@ -2,9 +2,9 @@
 import gym
 import torch as th
 
+from custom_policy import CustomActorCriticPolicy
 from envs.adversarial import AdversarialEnv9x9
 from envs.myopic import AdversarialMyopicEnv9x9
-from custom_policy import CustomActorCriticPolicy
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -20,8 +20,8 @@ env = AdversarialEnv9x9() if not MYOPIC else AdversarialMyopicEnv9x9()
 model = PPO(CustomActorCriticPolicy, env, verbose=1, tensorboard_log="./tensorboard", device=DEVICE)
 
 # Load pre-trained weights for the LTL module
-model.policy.mlp_extractor.rnn.load_state_dict(th.load("./pre_logs/weights_rnn.pt"))
 model.policy.mlp_extractor.ltl_embedder.load_state_dict(th.load("./pre_logs/weights_ltl.pt"))
+model.policy.mlp_extractor.ga.load_state_dict(th.load("./pre_logs/weights_ga.pt"))
 
 # Callback function to save the best model
 eval_callback = CustomCallback(Monitor(env), min_ep_rew_mean=.9, n_eval_episodes=20,
@@ -29,7 +29,7 @@ eval_callback = CustomCallback(Monitor(env), min_ep_rew_mean=.9, n_eval_episodes
                                eval_freq=int(1e4), verbose=1, render=False)
 
 # Training
-model.learn(int(3e6), callback=eval_callback)
+model.learn(int(4e6), callback=eval_callback)
 
 # Evaluation
 mean_rew, std_rew = evaluate_policy(model.policy, Monitor(env),

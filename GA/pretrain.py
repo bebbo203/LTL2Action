@@ -10,11 +10,12 @@ from torch import nn
 from envs.ltl_bootcamp import LTLBootcamp
 
 from customcallback import CustomCallback
-
 from stable_baselines3 import PPO
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.evaluation import evaluate_policy
+
+from GA import GA
 
 DEVICE = "cuda" if th.cuda.is_available() else "cpu"
 
@@ -44,13 +45,13 @@ class CustomNetwork(nn.Module):
         self.latent_dim_vf = last_layer_dim_vf
 
         # LTL module
-        self.ltl_embedder = nn.Embedding(13, 8, padding_idx=0)
-        self.rnn = nn.GRU(8, 32, num_layers=2, bidirectional=True, batch_first=True)
+        self.ltl_embedder = nn.Embedding(11, 16, padding_idx=0)
+        self.ga = GA(seq_len=10, num_rel=8, num_heads=32, num_layers=3, device=DEVICE)
 
         # Policy network
-        self.policy_net = nn.Linear(64, last_layer_dim_pi)
+        self.policy_net = nn.Linear(160, last_layer_dim_pi)
         # Value network
-        self.value_net = nn.Linear(64, last_layer_dim_vf)
+        self.value_net = nn.Linear(160, last_layer_dim_vf)
 
     def forward(self, features: th.Tensor) -> Tuple[th.Tensor, th.Tensor]:
         """
@@ -59,11 +60,13 @@ class CustomNetwork(nn.Module):
         """
 
         batch_size = features.shape[0]
+        formula = features[:, :10].to(th.long)
+        rels = features[:, 10:].reshape(batch_size, 10, 10).to(th.long)
         
         # LTL module
-        embedded_formula = self.ltl_embedder(features.to(th.long))
-        _, h = self.rnn(embedded_formula)
-        embedded_formula = h[:-2,:,:].transpose(0,1).reshape(batch_size, -1) # [B,64]
+        embedded_formula = self.ltl_embedder(formula)
+        embedded_formula = self.ga(embedded_formula, rels) # [B,10,16]
+        embedded_formula = embedded_formula.reshape(batch_size, -1) # [B,160]
 
         # RL module
         return self.policy_net(embedded_formula), self.value_net(embedded_formula)
@@ -106,7 +109,7 @@ env = LTLBootcamp()
 model = PPO(CustomActorCriticPolicy, env, verbose=1, device=DEVICE)
 
 # Training
-model.learn(int(1e6))
+model.learn(int(2e6))
 
 # Evaluation
 mean_rew, std_rew = evaluate_policy(model.policy, Monitor(env),
@@ -117,5 +120,5 @@ print(f"Mean reward: {mean_rew:.2f} +/- {std_rew:.2f}")
 
 # Save LTL module pre-trained weights
 th.save(model.policy.mlp_extractor.ltl_embedder.state_dict(), "./pre_logs/weights_ltl.pt")
-th.save(model.policy.mlp_extractor.rnn.state_dict(), "./pre_logs/weights_rnn.pt")
+th.save(model.policy.mlp_extractor.ga.state_dict(), "./pre_logs/weights_ga.pt")
 

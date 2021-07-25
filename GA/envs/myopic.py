@@ -6,7 +6,7 @@ from gym_minigrid.register import register
 import sys
 sys.path.insert(0, './envs')
 from minigrid_extensions import *
-sys.path.insert(0, '../')
+# sys.path.insert(0, '../')
 from resolver import progress
 
 from random import randint
@@ -101,8 +101,6 @@ class AdversarialMyopicEnv(MiniGridEnv):
 
     
     def reset(self):
-        ''' Env reset, must be called as soon as 'done' becomes True. '''
-
         obs = super().reset()
         self.time = 0
         return obs
@@ -255,7 +253,6 @@ class AdversarialMyopicEnv(MiniGridEnv):
             if tuple(self.agent_pos) == obj[0]:
                 events.append(obj[1])
         return events
-
 
 
 class AdversarialMyopicEnv9x9(AdversarialMyopicEnv):
