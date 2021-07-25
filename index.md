@@ -32,6 +32,9 @@ A Myopic agent reach a success rate of 50%, meaning that it cannot "see" what is
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/ep_rew_mean.png?raw=true" width="450" height="350"></div>
 
+
+## Experiments
+
 The agent is trained over a variety of LTL tasks, like partially ordered tasks and avoidance tasks.
 In the gif below the task *"eventually go to blue square and then go to green square"* is performed.
 
@@ -40,12 +43,12 @@ In the gif below the task *"eventually go to blue square and then go to green sq
 In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/video.gif?raw=true" width="450" height="450"></div>
-<br>
+
 
 ## Presentation
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRmVLPn5corUw9ZsMvvaKRcVAYPmkrEOdo_NKbG_IfEvwL_qpF5RmPx2HKAES-zY83YuF3iSSRNG1HH/embed?start=false&loop=true&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-<br>
+
 
 ## Installation
 
