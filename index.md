@@ -2,7 +2,7 @@
 The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action: LTL Instruction for multi-task RL](https://arxiv.org/pdf/2102.06858.pdf) (Vaezipoor et al. 2021).
 
 More details can be found in the **[Report](https://github.com/bebbo203/LTL2Action/blob/main/report.pdf)**.
-The full implementatio of the project is available on **[Github](https://github.com/bebbo203/LTL2Action)**.
+The full implementation of the project is available on **[Github](https://github.com/bebbo203/LTL2Action)**.
 
 ## Environment
 
