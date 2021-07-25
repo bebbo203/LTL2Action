@@ -8,7 +8,7 @@ More details can be found in the **[Report](https://github.com/bebbo203/LTL2Acti
 The environment is implemented with [gym-minigrid](https://github.com/maximecb/gym-minigrid): an agent (red triangle) must navigate in a 7x7 map. There are walls (grey squares), goals (colored squares) that are shuffled at each episode and doors (blue rectangles). The actions are _go straight_, _turn left_, _turn right_ and the observations returned are the 7x7 colored grid and the orientation of the agent codified by an integer.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/env.png?raw=true" width="300" height="300"></div>
-<br>
+
 
 ## Framework
 
@@ -16,7 +16,7 @@ We implemented a RL framework with LTL instructions which learn to solve complex
 Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (PPO).
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/modules.png?raw=true" width="500" height="300"></div>
-<br>
+
 
 ## Results
 
@@ -31,15 +31,13 @@ The two task taken in consideration are:
 A Myopic agent reach a success rate of 50%, meaning that it cannot "see" what is the successive goal after the blue one.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/ep_rew_mean.png?raw=true" width="450" height="350"></div>
-<br>
 
 The agent is trained over a variety of LTL tasks, like partially ordered tasks and avoidance tasks.
-In the gif below the task *"eventually go to blue square and then go to green square"* is shown.
+In the gif below the task *"eventually go to blue square and then go to green square"* is performed.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/openaigym.video.0.gif?raw=true" width="350" height="350"></div>
-<br>
 
-In the second example video the agent must perform a sequence of partially ordered task that appear in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
+In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/video.gif?raw=true" width="450" height="450"></div>
 <br>
