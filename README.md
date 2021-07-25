@@ -37,11 +37,11 @@ A Myopic agent reach a success rate of 50%, meaning that it cannot "see" what is
 The agent is trained over a variety of LTL tasks, like partially ordered tasks and avoidance tasks.
 In the gif below the task *"eventually go to blue square and then go to green square"* is performed.
 
-<div style="text-align:center"><img src=imgs/openaigym.video.0.gif width="350" height="350"></div>
+<div style="text-align:center"><img src=imgs/openaigym.video.0.gif width="402" height="402"></div>
 
 In the second example video the agent execute a sequence of partially ordered task that appear in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
-<div style="text-align:center"><img src=imgs/video.gif width="450" height="450"></div>
+<div style="text-align:center"><img src=imgs/video.gif width="402" height="450"></div>
 
 ## Installation
 
