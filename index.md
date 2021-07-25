@@ -1,30 +1,25 @@
-
-
-
-# LTL2Action: LTL Instructions for multi-task Reinforcement Learning 
-The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action](https://arxiv.org/pdf/2102.06858.pdf) (Vaezipoor et al. 2021)
+# LTL2Action: Multi-task Reinforcement Learning using LTL 
+The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action: LTL Instruction for multi-task RL](https://arxiv.org/pdf/2102.06858.pdf) (Vaezipoor et al. 2021).
 
 
 ## Environment
 
 The environment is implemented with [gym-minigrid](https://github.com/maximecb/gym-minigrid): an agent (red triangle) must navigate in a 7x7 map. There are walls (grey squares), goals (colored squares) that are shuffled at each episode and doors (blue rectangles). The actions are _go straight_, _turn left_, _turn right_ and the observations returned are the 7x7 colored grid and the orientation of the agent codified by an integer.
 
-<img width="385" alt="environment" src="https://user-images.githubusercontent.com/5352494/126873012-34d20065-9460-47d1-a918-4942d1615780.png">
+<div style="text-align:center"><img src=imgs/env.png width="300" height="300"></div>
 
 
+## Framework
 
+We implemented a RL framework with LTL instructions which learn to solve complex tasks (formalized in LTL language) in challenging environments. At every iteration the RL agent can partially observe the environment sorrounding it and through an event detector a set of truth assignments which are going to progressed (through a progression function) the LTL instruction, identifying the remaining aspect of the tasks to be accomplished.
+Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (PPO).
 
-## Method
+<div style="text-align:center"><img src=imgs/modules.png width="550" height="350"></div>
 
-
-We implemented a RL framework with LTL instructions which learn to solve complex tasks (formalized in LTL language) in challenging environments. At every iteration the RL agent can partially observe the environment sorrounding it and through an event detector a set of truth assignments which are going to somehow simplify (through the progression function) the LTL instruction, i.e. the remaining tasks to be accomplished.
-Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (such as PPO).
-
-![modules](https://user-images.githubusercontent.com/5352494/126873306-a021856d-dcba-4398-aa12-b98494e99dfb.png)
 
 ## Results
 
-The paper's method is able to solve multi-task environments with an high success rate.
+The method is able to solve multi-task environments with an high success rate.
 To make the agent generalize over the task formulas, every episode is descripted with a different LTL task sampled from a finite set. 
 In the following plot, a normal PPO agent and the novel agent are trained on the same environment.
 The two task taken in consideration are: 
@@ -34,21 +29,24 @@ The two task taken in consideration are:
 
 A Myopic agent reach a success rate of 50%, meaning that it cannot "see" what is the successive goal after the blue one.
 
-![ep_rew_mean_myopic_vs_toygrid](https://user-images.githubusercontent.com/5352494/126873004-477d3ac6-ba73-407f-b703-4abf02b35e81.png)
+<div style="text-align:center"><img src=imgs/ep_rew_mean.png width="450" height="350"></div>
 
 
-The agent is then trained over a variety of LTL tasks, like ordered tasks and avoidance.
-Here some example videos:
+The agent is trained over a variety of LTL tasks, like partially ordered tasks and avoidance tasks.
+In the gif below the task *"eventually go to blue square and then go to green square"* is shown.
 
+<div style="text-align:center"><img src=imgs/openaigym.video.0.gif width="350" height="350"></div>
 
+in this second example video the agent must perform a sequence of partially ordered task that appear in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
-![video1](https://user-images.githubusercontent.com/5352494/126873213-fae51c10-ecf2-4f9f-b4f8-5488d383bb35.gif)
-![video](https://user-images.githubusercontent.com/5352494/126873263-af3fb18c-b000-4f8c-bfb9-a863a1b96d9c.gif)
-![video3](https://user-images.githubusercontent.com/5352494/126873276-48dca188-4817-4509-b9ab-6f821a94074f.gif)
+<div style="text-align:center"><img src=imgs/video.gif width="450" height="450"></div>
+<br>
 
+More details can be found in the **[Report](https://github.com/bebbo203/LTL2Action/blob/main/report.pdf)**. 
 
+## Presentation
 
-
+<iframe src="https://docs.google.com/presentation/d/1HLjRPmO2p8TcKDwPFop2OnhQcqgTOwmZBXN_dk0nDUk/edit?ts=60f7dee5#slide=id.p" frameborder="0" width="960" height="750" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 ## Installation
 
@@ -56,16 +54,16 @@ Here some example videos:
 * [Stable-Baselines3](https://stable-baselines3.readthedocs.io/en/master/)
 * [gym-minigrid](https://github.com/maximecb/gym-minigrid)
 
-or, for better compatibility, the following command can be used
+or, for better compatibility, the following command can be used:
 
-### Create the environment
+### Set up the conda environment
 ```
 conda env create -f environment.yml
 ```
 
 ## How to Use
 
-### Training
+### Training RL agent
 
 ```
 python train.py
@@ -76,4 +74,6 @@ python train.py
 ```
 python test.py
 ```
-
+## References
+- Vaezipoor, Pashootan, Li, Andrew, Icarte, Rodrigo Toro, and McIlraith, Sheila (2021). “LTL2Action:Generalizing LTL Instructions for Multi-Task RL”. In:International Conference on MachineLearning (ICML)
+- Icarte, Rodrigo Toro, Klassen, Toryn Q., Valenzano, Richard Anthony, and McIlraith, Sheila A.(2018). “Teaching Multiple Tasks to an RL Agent using LTL.” In:International Conferenceon Autonomous Agents and Multiagent. Systems (AAMAS), (pp. 452–461)
