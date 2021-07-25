@@ -41,7 +41,7 @@ In the gif below the task *"eventually go to blue square and then go to green sq
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/openaigym.video.0.gif?raw=true" width="350" height="350"></div>
 
-In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the *progression* mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
+In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the **progression** mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/video.gif?raw=true" width="450" height="450"></div>
 <br>
