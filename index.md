@@ -6,7 +6,7 @@ The repository implements a reinforcement learning algorithm to address the prob
 
 The environment is implemented with [gym-minigrid](https://github.com/maximecb/gym-minigrid): an agent (red triangle) must navigate in a 7x7 map. There are walls (grey squares), goals (colored squares) that are shuffled at each episode and doors (blue rectangles). The actions are _go straight_, _turn left_, _turn right_ and the observations returned are the 7x7 colored grid and the orientation of the agent codified by an integer.
 
-<div style="text-align:center"><img src=imgs/env.png width="300" height="300"></div>
+<div style="text-align:center"><img src=https://github.com/bebbo203/LTL2Action/blob/main/imgs/env.png width="300" height="300"></div>
 
 
 ## Framework
