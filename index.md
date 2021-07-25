@@ -14,7 +14,7 @@ The environment is implemented with [gym-minigrid](https://github.com/maximecb/g
 We implemented a RL framework with LTL instructions which learn to solve complex tasks (formalized in LTL language) in challenging environments. At every iteration the RL agent can partially observe the environment sorrounding it and through an event detector a set of truth assignments which are going to progressed (through a progression function) the LTL instruction, identifying the remaining aspect of the tasks to be accomplished.
 Therefore, the overall method relies on two modules which serve as feature extractors: one for the observation of the environment and one for the LTL instruction, which are later combined together to forms the input of a standard RL algorithm (PPO).
 
-<div style="text-align:center"><img src=imgs/modules.png width="550" height="350"></div>
+<div style="text-align:center"><img src=https://github.com/bebbo203/LTL2Action/blob/main/imgs/modules.png width="550" height="350"></div>
 
 
 ## Results
@@ -29,17 +29,17 @@ The two task taken in consideration are:
 
 A Myopic agent reach a success rate of 50%, meaning that it cannot "see" what is the successive goal after the blue one.
 
-<div style="text-align:center"><img src=imgs/ep_rew_mean.png width="450" height="350"></div>
+<div style="text-align:center"><img src=https://github.com/bebbo203/LTL2Action/blob/main/imgs/ep_rew_mean.png width="450" height="350"></div>
 
 
 The agent is trained over a variety of LTL tasks, like partially ordered tasks and avoidance tasks.
 In the gif below the task *"eventually go to blue square and then go to green square"* is shown.
 
-<div style="text-align:center"><img src=imgs/openaigym.video.0.gif width="350" height="350"></div>
+<div style="text-align:center"><img src=https://github.com/bebbo203/LTL2Action/blob/main/imgs/openaigym.video.0.gif width="350" height="350"></div>
 
 in this second example video the agent must perform a sequence of partially ordered task that appear in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
-<div style="text-align:center"><img src=imgs/video.gif width="450" height="450"></div>
+<div style="text-align:center"><img src=https://github.com/bebbo203/LTL2Action/blob/main/imgs/video.gif width="450" height="450"></div>
 <br>
 
 More details can be found in the **[Report](https://github.com/bebbo203/LTL2Action/blob/main/report.pdf)**. 
