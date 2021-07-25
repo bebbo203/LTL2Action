@@ -2,6 +2,7 @@
 The repository implements a reinforcement learning algorithm to address the problem of instruct RL agents to learn temporally extended goals in multi-task environments. The project is based on the idea introduced in [LTL2Action: LTL Instruction for multi-task RL](https://arxiv.org/pdf/2102.06858.pdf) (Vaezipoor et al. 2021).
 
 More details can be found in the **[Report](https://github.com/bebbo203/LTL2Action/blob/main/report.pdf)**.
+The full implementatio of the project is available on **[Github](https://github.com/bebbo203/LTL2Action)**.
 
 ## Environment
 
@@ -40,15 +41,15 @@ In the gif below the task *"eventually go to blue square and then go to green sq
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/openaigym.video.0.gif?raw=true" width="350" height="350"></div>
 
-In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the progression mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
+In the second example video the agent must execute a sequence of partially ordered task appearing in the image bottom part, showing also the *progression* mechanism. When the task is accomplished the LTL formula progresses to *true*. Note that LTL formulae are represented in *prefix notation* by using tokens for operators and prepositions and brackets for relations.
 
 <div style="text-align:center"><img src="https://github.com/bebbo203/LTL2Action/blob/main/imgs/video.gif?raw=true" width="450" height="450"></div>
-
+<br>
 
 ## Presentation
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRmVLPn5corUw9ZsMvvaKRcVAYPmkrEOdo_NKbG_IfEvwL_qpF5RmPx2HKAES-zY83YuF3iSSRNG1HH/embed?start=false&loop=true&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-
+<br>
 
 ## Installation
 
