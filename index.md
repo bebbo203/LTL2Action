@@ -46,7 +46,8 @@ More details can be found in the **[Report](https://github.com/bebbo203/LTL2Acti
 
 ## Presentation
 
-<iframe src="https://docs.google.com/presentation/d/1HLjRPmO2p8TcKDwPFop2OnhQcqgTOwmZBXN_dk0nDUk/edit?ts=60f7dee5#slide=id.p" frameborder="0" width="960" height="750" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRmVLPn5corUw9ZsMvvaKRcVAYPmkrEOdo_NKbG_IfEvwL_qpF5RmPx2HKAES-zY83YuF3iSSRNG1HH/embed?start=false&loop=true&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 ## Installation
 
